@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@heroui/react": "^3.1.0",
+    "@heroui/styles": "^3.1.0",
     "@hookform/resolvers": "^5.4.0",
     "axios": "^1.16.1",
     "date-fns": "^4.4.0",
