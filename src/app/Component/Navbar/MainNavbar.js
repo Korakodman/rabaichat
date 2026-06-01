@@ -1,7 +1,13 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { Button } from "@heroui/react";
 import { House, Search, Settings } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 const MainNavbar = () => {
+  const pathname = usePathname();
+  const route = useRouter();
+  const [isLogout,setisLogout] = useState(false)
+  // object menu path
   const menus = [
     {
       name: "Home",
@@ -10,12 +16,12 @@ const MainNavbar = () => {
     },
     {
       name: "Chat-Room",
-      path: "/",
+      path: "/Chat-Room",
       icon: Search,
     },
     {
       name: "Setting",
-      path: "/",
+      path: "/Setting",
       icon: Settings,
     },
   ];
@@ -23,15 +29,17 @@ const MainNavbar = () => {
     <nav className="bg-[#44444E] h-screen w-48 p-4 text-[#D3DAD9] relative ">
       {/* <----- header -----> */}
       <header>
-        <h1 className="text-2xl p-2">RaBaiChat</h1>
+        <h1 className="text-2xl p-2 ml-2">RaBaiChat</h1>
       </header>
       {/* <----- Menu -----> */}
       <div className="menu-navbar ">
         <ul className="font-bold mt-20">
-         {menus.map((menu,index)=>{
-        const isActive = false
-        const Icon = menu.icon
-           return( <li  className={`
+          {menus.map((menu, index) => {
+            const isActive = pathname === menu.path;
+            const Icon = menu.icon;
+            return (
+              <li
+                className={`
             mt-4
         flex items-center gap-3
         px-4 py-3 rounded-xl
@@ -40,11 +48,18 @@ const MainNavbar = () => {
 
         ${
           isActive
-            ? "bg-[#44444E]/20 text-black shadow-md"
+            ? "bg-[#D3DAD9] text-black shadow-md"
             : "hover:bg-[#D3DAD9]/20"
         }
-      `} key={index}><Icon size={20}/><span>{menu.name}</span></li>)
-         })}
+      `}
+                key={index}
+                onClick={() => route.push(menu.path)}
+              >
+                <Icon size={20} />
+                <span>{menu.name}</span>
+              </li>
+            );
+          })}
         </ul>
       </div>
       {/* <---- ProfileUI  ---->*/}
@@ -52,8 +67,10 @@ const MainNavbar = () => {
         <Button
           variant="danger"
           className="p-2 bottom-10 absolute font-extrabold duration-200 hover:bg-red-400 hover:text-red-700 w-34 transition-all"
+          onClick={()=>setisLogout(!false)}
+          isDisabled={isLogout}
         >
-          Logout
+            {isLogout ? "Logout..." : "Logout"}
         </Button>
       </div>
     </nav>
