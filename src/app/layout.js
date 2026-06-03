@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-screen"><div className="flex min-h-screen">
         <MainNavbar/> 
-        <main className="min-w-0 flex-1 overflow-x-hidden">{children}</main>
+        <main className="min-w-0 flex-1 overflow-x-hidden bg-[#37353E]">{children}</main>
       </div></body>
     </html>
   );

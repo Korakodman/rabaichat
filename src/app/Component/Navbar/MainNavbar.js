@@ -48,8 +48,8 @@ const MainNavbar = () => {
 
         ${
           isActive
-            ? "bg-[#D3DAD9] text-black shadow-md"
-            : "hover:bg-[#D3DAD9]/20"
+            ? "bg-[#D3DAD9] text-black shadow-md "
+            : "hover:bg-[#D3DAD9]/20 "
         }
       `}
                 key={index}
@@ -66,7 +66,7 @@ const MainNavbar = () => {
       <div className="p-2 ">
         <Button
           variant="danger"
-          className="p-2 bottom-10 absolute font-extrabold duration-200 hover:bg-red-400 hover:text-red-700 w-34 transition-all"
+          className="p-2 bottom-10 absolute font-extrabold duration-200 hover:bg-red-500/80 hover:text-red-700 w-34 transition-all"
           onClick={()=>setisLogout(!false)}
           isDisabled={isLogout}
         >
