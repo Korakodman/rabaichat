@@ -1,0 +1,22 @@
+export const story = [{
+  id:1,
+  title:"Select...",
+  value:"",
+ },{
+  id:2,
+  title:"ครอบครัว",
+  value:"family",
+ },
+{
+  id:3,
+  title:"ความรัก",
+  value:"love",
+ },{
+  id:4,
+  title:"ครอบครัว",
+  value:"family",
+ },{
+  id:5,
+  title:"เรื่องอื่นๆ...",
+  value:"other",
+ }]
