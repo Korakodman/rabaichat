@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased `}
     >
-      <body className="min-h-screen"><div className="flex min-h-screen">
+      <body className="min-h-screen"><div className="flex h-screen">
         <MainNavbar/> 
         <main className="min-w-0 flex-1 overflow-x-hidden bg-[#37353E]">{children}</main>
       </div></body>
