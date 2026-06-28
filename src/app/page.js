@@ -6,10 +6,11 @@ import { story } from "@/data/story";
 import { useState } from "react";
 import {  useForm, } from "react-hook-form";
 import { Header } from "@heroui/react";
-import { ca } from "zod/v4/locales";
+import { ca, tr } from "zod/v4/locales";
+import { useRouter } from "next/navigation";
 export default function Home() {
-  const state = useOverlayState()
-
+  const [button,setButton] = useState(false)
+  const route = useRouter()
   const speaker = useForm({
     defaultValues:{
       role:"speaker"
@@ -21,14 +22,21 @@ export default function Home() {
     }
   })
   
-  const [handleButton,SethandleButton] = useState(false)
   function onSubmitHandle(data) {
     switch (data.role) {
       case "speaker":
          console.log("กำลังสร้างห้อง...",data)
+         setButton(true)
+         setTimeout(() => {
+         route.push("/Chat-Room")
+         }, 3000);
         break;
       case "listener":
         console.log("กำลังค้นหาห้องสำหรับผู้ฟัง... ",data)
+          setButton(true)
+         setTimeout(() => {
+         route.push("/Chat-Room")
+         }, 3000);
         break;
       default:
         console.log("มี Error กรุณาตรวจสอบ")
@@ -85,7 +93,7 @@ function GenerateGustName() {
         <ErrorMessage className="mt-2 ml-2">{speaker.formState.errors.username?.message}</ErrorMessage>
        </div>
       <div className="flex justify-center">
-        <Button onClick={HandleButtonRamdomGuest} className="box-border bg-[#D3DAD9] text-[#44444E] ml-2" type="button">สุ่มชื่อ</Button>
+        <Button onClick={HandleButtonRamdomGuest}  className="box-border bg-[#D3DAD9] text-[#44444E] ml-2" type="button">สุ่มชื่อ</Button>
         </div>
      </div>
       <select {...speaker.register("story", { required:"กรุณาเลือกหัวข้อ"})} className="mt-2">
@@ -97,10 +105,10 @@ function GenerateGustName() {
       </select>
        <ErrorMessage className="mt-2 ml-2">{speaker.formState.errors.story?.message}</ErrorMessage>
     <div className="flex justify-center">
-      <Button type="submit" className=" mt-2 box-border bg-[#D3DAD9] text-[#44444E] ml-2" >ยืนยัน</Button>
+      <Button type="submit" className=" mt-2 box-border bg-[#D3DAD9] text-[#44444E] ml-2"  isDisabled={button} >{button ? "กำลังสร้างห้อง.." : "ยืนยัน"}</Button>
     </div>
     
-    </form>
+    </form> 
     {/* <-------Form for listening -------*/}
       </Tabs.Panel>
       <Tabs.Panel className="px-4 border-2 border-[#37353E] bg-[#44444E] rounded-2xl w-[350px]" id="รับบทเป็นผู้ฟัง">
@@ -117,7 +125,7 @@ function GenerateGustName() {
        })}
       </select>
        <div className="flex justify-center">
-        <Button className="mt-2 box-border bg-[#D3DAD9] text-[#44444E]" type="submit">ยืนยัน</Button>
+        <Button className="mt-2 box-border bg-[#D3DAD9] text-[#44444E]" type="submit" isDisabled={button}>{button ? "กำลังค้นหาห้อง.." : "ยืนยัน"}</Button>
        </div>
      </div>
      </form>
