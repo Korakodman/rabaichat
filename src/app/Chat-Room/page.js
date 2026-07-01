@@ -27,16 +27,20 @@ function page() {
 
   // mock input message test
   function sendMessage(params) {
-   if(InputRef.current.value !== ""){
-   setMessage((prev)=>[...prev,{
-    textMessage:InputRef.current.value,
-    name:"korakod",
+    let text = InputRef.current.value 
+    if(!text){
+      return
+    }else{
+    setMessage((prev)=>[...prev,{
+    textMessage:text,
+    name:"jame",
     role:"listen",
-    id:Math.floor(Math.random()*10000)
+    id:Math.floor(Math.random()*10000),
+    time: new Date().toLocaleString("th-TH")
    }])
-   }else{
-    return
-   }
+   InputRef.current.value = ""
+    }
+     
   }
 
   function handleKeyPress(e) {
@@ -56,9 +60,22 @@ function page() {
          <div className='flex-1 overflow-y-auto p-4 space-y-2'>
           {message.map((msg)=>
           {return(
+            // layout Chat
             <div key={msg.id} className={`flex ${msg.name === user ? "justify-end" : " justify-start"}`}>
-              {msg.textMessage}
-              <span>{msg.name}</span>
+              {/* box-chat */}
+              <div className={`p-2 rounded-xl max-w-[70%] break-words ${
+            msg.name === user
+              ? "bg-[#44444E] text-[#D3DAD9] rounded-tr-none"
+              : "bg-[#44444E]/60 text-[#DFD0B8] rounded-tl-none"
+          }`}>
+               
+              <div className='text-sm grid'>
+                <div>{msg.name !== user && <span className='font-semibold'>{msg.name}: </span>} 
+                 {msg.textMessage}
+                 </div>
+                </div>
+             
+              </div>
               </div>
           )})}
          </div>
