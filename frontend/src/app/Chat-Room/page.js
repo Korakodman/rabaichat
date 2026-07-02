@@ -1,6 +1,7 @@
 'use client'
 import React, { useRef, useState } from 'react'
 import { Input } from '@heroui/react'
+import axios from 'axios'
 function page() {
 
 
@@ -46,6 +47,16 @@ function page() {
    InputRef.current.value = ""
     }
      
+    axios.post("http://localhost:4000/api/v1/message",{message})
+    .then((respone)=>{
+      console.log(respone)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+    .finally(()=>{
+      console.log("request 100%")
+    })
   }
 
   function handleKeyPress(e) {
