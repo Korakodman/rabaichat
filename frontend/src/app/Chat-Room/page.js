@@ -1,13 +1,23 @@
 'use client'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Input } from '@heroui/react'
 import axios from 'axios'
+import { socket } from '@/lib/socket'
+
 function page() {
 
 
   const InputRef = useRef()
   const [user,setUser] = useState("jame")
   
+
+   // handle ServerSocket
+
+   useEffect(()=>{
+    socket.emit("join",user)
+   },[])
+
+
   const [message,setMessage] = useState([{
     textMessage:"ยินดีต้อนรับเข้าแชทระบาย",
     name:"ระบบ",
@@ -64,6 +74,7 @@ function page() {
       sendMessage()
     }
   }
+
 
 
   return (
