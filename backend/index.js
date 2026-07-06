@@ -17,8 +17,19 @@ io.on("connection",(socket)=>{
 
     socket.on("join", (username) => {
     socket.username = username;
-    io.emit("system", `${username} joined`);
+    socket.emit("system",`${username} Joined`)
   });
+    
+   socket.on("send-message",(msg)=>{
+    io.emit("receive-message",{
+    name:socket.username || "Unknows client",
+    textMessage:msg,
+    role:"speaker",
+    id:Date.now(),
+    time: new Date().toLocaleString("th-TH")
+    })
+   
+   })
 
      socket.on("disconnect", () => {
     console.log("disconnected:", socket.id);

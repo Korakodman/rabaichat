@@ -7,6 +7,18 @@ import { socket } from '@/lib/socket'
 function page() {
 
 
+//  {
+//     textMessage:"chat-1",
+//     name:"korakod",
+//     role:"speaker",
+//     id:1
+//   }
+// {
+//     textMessage:"chat-2",
+//     name:"jame",
+//      role:"listen",
+//     id:2
+//   }
   const InputRef = useRef()
   const [user,setUser] = useState("jame")
   
@@ -14,31 +26,40 @@ function page() {
    // handle ServerSocket
 
    useEffect(()=>{
-    socket.emit("join",user)
+
+    const handleMessage = (data)=>{
+      //ปัญารับเป็น array
+      //  setMessage(data)
+  setMessage((prev)=>[...prev,data])
+  } 
+      socket.on("receive-message",handleMessage)
+
+      socket.on("system", (msg) => {
+        // เจอปัญหาส่งไปยัง backend เป็น array
+        setMessage(prev=>[
+        ...prev,{
+    textMessage:msg,
+    name:"ระบบ",
+    role:"speaker",
+    id:Date.now(),
+    time: new Date().toLocaleString("th-TH")
+  }])
+   }); 
+    return ()=>{
+      socket.off("receive-message",handleMessage)
+      socket.off("system")
+    }
    },[])
+  
+  
 
 
   const [message,setMessage] = useState([{
-    textMessage:"ยินดีต้อนรับเข้าแชทระบาย",
-    name:"ระบบ",
-    role:"speaker",
-    id:4
-  },{
-    textMessage:"chat-1",
-    name:"korakod",
-    role:"speaker",
-    id:1
-  },{
-    textMessage:"chat-2",
-    name:"jame",
-     role:"listen",
-    id:2
-  },
-  {textMessage:"chat-3",
-    name:"bond",
-    role:"listen",
-    id:3
-  }])
+      id: 1,
+      name: "ระบบ",
+      textMessage: "Welcome to chat 👋",
+      role:"speaker"
+    },])
 
 
   // mock input message test
@@ -46,27 +67,10 @@ function page() {
     let text = InputRef.current.value 
     if(!text){
       return
-    }else{
-    setMessage((prev)=>[...prev,{
-    textMessage:text,
-    name:"jame",
-    role:"listen",
-    id:Math.floor(Math.random()*10000),
-    time: new Date().toLocaleString("th-TH")
-   }])
-   InputRef.current.value = ""
     }
-     
-    axios.post("http://localhost:4000/api/v1/message",{message})
-    .then((respone)=>{
-      console.log(respone)
-    })
-    .catch((error)=>{
-      console.log(error)
-    })
-    .finally(()=>{
-      console.log("request 100%")
-    })
+   InputRef.current.value = ""
+   socket.emit("join")
+   socket.emit("send-message",text)
   }
 
   function handleKeyPress(e) {
@@ -83,7 +87,7 @@ function page() {
       <section className='flex flex-col h-[775px]'>
          <div className='flex-1 overflow-y-auto p-4 space-y-2'>
           {message.map((msg)=>
-          {return(
+   
             // layout Chat
             <div key={msg.id} className={`flex ${msg.name === user ? "justify-end" : " justify-start"}`}>
               {/* box-chat */}
@@ -101,7 +105,7 @@ function page() {
              
               </div>
               </div>
-          )})}
+          )}
          </div>
       </section>
       {/* Input-chat */}
