@@ -26,6 +26,8 @@ export default function Home() {
     switch (data.role) {
       case "speaker":
          console.log("กำลังสร้างห้อง...",data)
+         let dataJson = JSON.stringify(data)
+         localStorage.setItem("user",dataJson)
          setButton(true)
          setTimeout(() => {
          route.push("/Chat-Room")
@@ -86,11 +88,11 @@ function GenerateGustName() {
       <Header />
      <div className="flex">
        <div className="grid">
-        <input {...speaker.register("username",{required:"ใส่ชื่อด้วยครับ"})} placeholder="ตั้งชื่อ" 
+        <input {...speaker.register("name",{required:"ใส่ชื่อด้วยครับ"})} placeholder="ตั้งชื่อ" 
       className="p-2 border-2 border-[#37353E] rounded-2xl focus:outline-0"
-        aria-invalid={speaker.setError.username ? "true" : "false"} 
+        aria-invalid={speaker.setError.name ? "true" : "false"} 
       />
-        <ErrorMessage className="mt-2 ml-2">{speaker.formState.errors.username?.message}</ErrorMessage>
+        <ErrorMessage className="mt-2 ml-2">{speaker.formState.errors.name?.message}</ErrorMessage>
        </div>
       <div className="flex justify-center">
         <Button onClick={HandleButtonRamdomGuest}  className="box-border bg-[#D3DAD9] text-[#44444E] ml-2" type="button">สุ่มชื่อ</Button>

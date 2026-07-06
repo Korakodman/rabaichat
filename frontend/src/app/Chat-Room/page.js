@@ -20,7 +20,8 @@ function page() {
 //     id:2
 //   }
   const InputRef = useRef()
-  const [user,setUser] = useState("jame")
+  const [user,setUser] = useState()
+
   
 
    // handle ServerSocket
@@ -32,6 +33,10 @@ function page() {
       //  setMessage(data)
   setMessage((prev)=>[...prev,data])
   } 
+  const username = localStorage.getItem("user")
+  const userobject = JSON.parse(username)
+      setUser(userobject.name)
+      socket.emit("join",userobject.name)
       socket.on("receive-message",handleMessage)
 
       socket.on("system", (msg) => {
@@ -48,7 +53,9 @@ function page() {
     return ()=>{
       socket.off("receive-message",handleMessage)
       socket.off("system")
+      
     }
+    
    },[])
   
   
@@ -69,7 +76,7 @@ function page() {
       return
     }
    InputRef.current.value = ""
-   socket.emit("join")
+
    socket.emit("send-message",text)
   }
 
@@ -98,7 +105,7 @@ function page() {
           }`}>
                
               <div className='text-sm grid'>
-                <div>{msg.name !== user && <span className='font-semibold'>{msg.name}: </span>} 
+                <div>{msg.name !== user  && <span className='font-semibold'>{msg.name}: </span>} 
                  {msg.textMessage}
                  </div>
                 </div>
