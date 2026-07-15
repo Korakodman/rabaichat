@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Input } from '@heroui/react'
 import axios from 'axios'
 import { socket } from '@/lib/socket'
-
+import { useRouter } from 'next/navigation'
 function page() {
 
 
@@ -20,8 +20,13 @@ function page() {
 //     id:2
 //   }
   const InputRef = useRef()
+  const route = useRouter()
   const [user,setUser] = useState()
+  const [room,setRoom] = useState(
+    {roomA:[{
 
+    }]}
+  )
   
 
    // handle ServerSocket
@@ -33,23 +38,47 @@ function page() {
       //  setMessage(data)
   setMessage((prev)=>[...prev,data])
   } 
+  const handleRoom = (data)=>{
+    setRoom((prev)=>[...prev,data])
+  }
+  // ดึงข้อมูลจาก local key user ระบบชั่วคร่าว
   const username = localStorage.getItem("user")
+  // แปลงเป็น object
   const userobject = JSON.parse(username)
-      setUser(userobject.name)
-      socket.emit("join",userobject.name)
-      socket.on("receive-message",handleMessage)
+      if(!userobject){
+       alert("ไม่พบชื่อผู้ใช้")
+       route.push("/")
+       return
+      }
 
-      socket.on("system", (msg) => {
-        // เจอปัญหาส่งไปยัง backend เป็น array
-        setMessage(prev=>[
-        ...prev,{
-    textMessage:msg,
-    name:"ระบบ",
-    role:"speaker",
-    id:Date.now(),
-    time: new Date().toLocaleString("th-TH")
-  }])
-   }); 
+      
+setUser(userobject.name)
+      socket.emit("join",userobject.name)
+      socket.emit("join-room", {
+  roomId: "javascript",
+  userId: "1",
+  username: "Korakot",
+},)
+socket.emit("join-room", {
+  roomId: "javascript",
+  userId: "2",
+  username: "Jame",
+},)
+      socket.on("receive-message",handleMessage)
+      console.log(room)
+     
+
+  //     socket.on("system", (msg) => {
+  //       // เจอปัญหาส่งไปยัง backend เป็น array แก้ไขแล้ว
+  //       setMessage(prev=>[
+  //       ...prev,{
+  //   textMessage:msg,
+  //   id:Date.now(),
+  //   time: new Date().toLocaleString("th-TH")
+  // }])
+  //  }); 
+      
+     
     return ()=>{
       socket.off("receive-message",handleMessage)
       socket.off("system")
@@ -76,7 +105,7 @@ function page() {
       return
     }
    InputRef.current.value = ""
-
+     console.log(message)
    socket.emit("send-message",text)
   }
 
@@ -93,10 +122,10 @@ function page() {
      {/* bg-chat-history */}
       <section className='flex flex-col h-[775px]'>
          <div className='flex-1 overflow-y-auto p-4 space-y-2'>
-          {message.map((msg)=>
+          {message.map((msg,index)=>
    
             // layout Chat
-            <div key={msg.id} className={`flex ${msg.name === user ? "justify-end" : " justify-start"}`}>
+            <div key={index} className={`flex ${msg.name === user ? "justify-end" : " justify-start"}`}>
               {/* box-chat */}
               <div className={`p-2 rounded-xl max-w-[70%] break-words ${
             msg.name === user
