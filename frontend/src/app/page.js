@@ -98,7 +98,7 @@ function GenerateGustName() {
         <Button onClick={HandleButtonRamdomGuest}  className="box-border bg-[#D3DAD9] text-[#44444E] ml-2" type="button">สุ่มชื่อ</Button>
         </div>
      </div>
-      <select {...speaker.register("story", { required:"กรุณาเลือกหัวข้อ"})} className="mt-2">
+      <select {...speaker.register("roomId", { required:"กรุณาเลือกหัวข้อ"})} className="mt-2">
         {story.map((title)=>{
           return(
             <option className="text-[#37353E]" key={title.id} value={title.value}>{title.title}</option>

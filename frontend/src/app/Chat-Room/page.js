@@ -55,17 +55,11 @@ function page() {
 setUser(userobject.name)
       socket.emit("join",userobject.name)
       socket.emit("join-room", {
-  roomId: "javascript",
-  userId: "1",
-  username: "Korakot",
-},)
-socket.emit("join-room", {
-  roomId: "javascript",
-  userId: "2",
-  username: "Jame",
+  roomId: userobject.roomId,
+  userId: Date.now(),
+  username: userobject.name,
 },)
       socket.on("receive-message",handleMessage)
-      console.log(room)
      
 
   //     socket.on("system", (msg) => {
@@ -105,8 +99,11 @@ socket.emit("join-room", {
       return
     }
    InputRef.current.value = ""
-     console.log(message)
-   socket.emit("send-message",text)
+    // ดึงข้อมูลจาก local key user ระบบชั่วคร่าว
+  const username = localStorage.getItem("user")
+  // แปลงเป็น object
+  const userobject = JSON.parse(username)
+   socket.emit("send-message",{userobject,text})
   }
 
   function handleKeyPress(e) {

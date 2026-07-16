@@ -15,8 +15,10 @@ console.log("เซิฟกำลังทำงาน")
 
 
 
-io.on("connection",(socket)=>{
   const rooms = {}
+
+io.on("connection",(socket)=>{
+
 
     console.log("a user connected",socket.id)
     socket.on("join", (username) => {
@@ -35,27 +37,33 @@ io.on("connection",(socket)=>{
       rooms[room.roomId].push({
         sockId:socket.id,
         username:room.username
-      })
-      console.log(rooms)
+      })  
+       socket.join(room.roomId)
+       console.log(socket.rooms)
      }
+
+
     )
    
 
   });
     
-   socket.on("send-message",(msg)=>{
-    io.emit("receive-message",{
+   socket.on("send-message",(data)=>{
+    console.log(data.userobject.roomId)
+     console.log(data)
+    io.to(data.roomId).emit("receive-message",{
     name:socket.username || "Unknows client",
-    textMessage:msg,
+    textMessage:data.text,
     role:"speaker",
     id:Date.now(),
     time: new Date().toLocaleString("th-TH"),
     socket: socket.id
     })
    
+   
    })
 
-
+   
    
      socket.on("disconnect", () => {
 
