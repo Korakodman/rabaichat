@@ -57,7 +57,7 @@ setUser(userobject.name)
       socket.emit("join-room", {
   roomId: userobject.roomId,
   userId: Date.now(),
-  username: userobject.name,
+  name: userobject.name,
 },)
       socket.on("receive-message",handleMessage)
      
@@ -99,11 +99,14 @@ setUser(userobject.name)
       return
     }
    InputRef.current.value = ""
+
     // ดึงข้อมูลจาก local key user ระบบชั่วคร่าว
   const username = localStorage.getItem("user")
-  // แปลงเป็น object
-  const userobject = JSON.parse(username)
-   socket.emit("send-message",{userobject,text})
+
+  // แปลงเป็น object #เจอปัญหาเข้าถึง key ไม่ได้
+  // แก้โดยทำการ Destructuring 
+  const {role,name,roomId} = JSON.parse(username)
+   socket.emit("send-message",{roomId,text})
   }
 
   function handleKeyPress(e) {
