@@ -22,11 +22,7 @@ function page() {
   const InputRef = useRef()
   const route = useRouter()
   const [user,setUser] = useState()
-  const [room,setRoom] = useState(
-    {roomA:[{
-
-    }]}
-  )
+  const [onlineUsers,setOnlineUsers] = useState([])
   
 
    // handle ServerSocket
@@ -35,12 +31,10 @@ function page() {
 
     const handleMessage = (data)=>{
       //ปัญารับเป็น array
-      //  setMessage(data)
+      // ตอนแรกเป็น  setMessage(data) #แก้เป็นโค้ดด้านล่าง
   setMessage((prev)=>[...prev,data])
   } 
-  const handleRoom = (data)=>{
-    setRoom((prev)=>[...prev,data])
-  }
+
   // ดึงข้อมูลจาก local key user ระบบชั่วคร่าว
   const username = localStorage.getItem("user")
   // แปลงเป็น object
@@ -60,6 +54,9 @@ setUser(userobject.name)
   name: userobject.name,
 },)
       socket.on("receive-message",handleMessage)
+      socket.on("online-user", (users) => { 
+    setOnlineUsers(users);
+});
      
 
   //     socket.on("system", (msg) => {
@@ -107,6 +104,7 @@ setUser(userobject.name)
   // แก้โดยทำการ Destructuring 
   const {role,name,roomId} = JSON.parse(username)
    socket.emit("send-message",{roomId,text})
+
   }
 
   function handleKeyPress(e) {

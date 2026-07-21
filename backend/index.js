@@ -20,7 +20,6 @@ console.log("เซิฟกำลังทำงาน")
 io.on("connection",(socket)=>{
 
     // เมื่อผู้ใช้เข้าร่วมแชท
-    console.log("a user connected",socket.id)
     socket.on("join", (username) => {
 
     socket.username = username;
@@ -42,12 +41,13 @@ io.on("connection",(socket)=>{
       })  
        socket.join(room.roomId)
      
+    io.to(room.roomId).emit("online-user",rooms[room.roomId])
      }
 
   );
     
    socket.on("send-message",(data)=>{
-    console.log(rooms)
+
     io.to(data.roomId).emit("receive-message",{
     name:socket.username || "Unknows client",
     textMessage:data.text,
@@ -67,9 +67,12 @@ socket.on("disconnecting", () => {
     if(room === socket.id) continue
     console.log("ข้อมูลห้อง",room)
     rooms[room] = rooms[room].filter(user => user.sockId !== socket.id)
+    io.to(rooms[room]).emit("online-user",rooms[room])
     // ถ้าห้องนั้นไม่มีคนอยู่ให้ลบห้องนั้นออก
      if(rooms[room].length === 0)
       delete rooms[room]
+
+     
    }
   
   });
