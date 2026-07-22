@@ -3,9 +3,9 @@ export function OnlineUsers({ users }) {
         <div>
             <h2>Online</h2>
 
-            {users.map((user) => (
+            {users.map((user,index) => (
                 <div key={user.sockId}>
-                    🟢 {user.name}
+                    {index + 1}🟢 {user.name}
                 </div>
             ))}
         </div>

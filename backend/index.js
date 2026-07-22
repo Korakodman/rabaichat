@@ -18,15 +18,7 @@ console.log("เซิฟกำลังทำงาน")
   const rooms = {}
 
 io.on("connection",(socket)=>{
-
-    // เมื่อผู้ใช้เข้าร่วมแชท
-    socket.on("join", (username) => {
-
-    socket.username = username;
-    socket.emit("system",`${username} Joined`)
-    }
-    )
-
+ console.log("connected", socket.id);
    // เมื่อผู้ใช้เข้าห้องมา
     socket.on("join-room",(room)=>{
   
@@ -45,9 +37,10 @@ io.on("connection",(socket)=>{
      }
 
   );
-    
-   socket.on("send-message",(data)=>{
 
+    // ส่งข้อความ
+   socket.on("send-message",(data)=>{
+   // ส่งข้อความไปยังห้องนั้นที่อยู่
     io.to(data.roomId).emit("receive-message",{
     name:socket.username || "Unknows client",
     textMessage:data.text,
@@ -59,6 +52,16 @@ io.on("connection",(socket)=>{
    
    
    })
+
+   socket.on("leave-room", (roomId) => {
+  socket.leave(roomId);
+
+  rooms[roomId] = rooms[roomId].filter(
+    user => user.sockId !== socket.id
+  );
+
+  io.to(roomId).emit("online-user", rooms[roomId]);
+});
 
    // เมื่อมีการ disconnecting หรือกดออกจากเว็บให้ลบ sockId ใน rooms backend
 socket.on("disconnecting", () => {

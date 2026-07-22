@@ -4,6 +4,7 @@ import { Input } from '@heroui/react'
 import axios from 'axios'
 import { socket } from '@/lib/socket'
 import { useRouter } from 'next/navigation'
+import { OnlineUsers } from '../Component/Chat-room/onlineUser'
 function page() {
 
 
@@ -35,6 +36,10 @@ function page() {
   setMessage((prev)=>[...prev,data])
   } 
 
+  const handleOnlineUser = (users) => {
+  setOnlineUsers(users);
+};
+
   // ดึงข้อมูลจาก local key user ระบบชั่วคร่าว
   const username = localStorage.getItem("user")
   // แปลงเป็น object
@@ -47,7 +52,6 @@ function page() {
 
       
 setUser(userobject.name)
-      socket.emit("join",userobject.name)
       socket.emit("join-room", {
   roomId: userobject.roomId,
   userId: Date.now(),
@@ -59,21 +63,23 @@ setUser(userobject.name)
 });
      
 
-  //     socket.on("system", (msg) => {
-  //       // เจอปัญหาส่งไปยัง backend เป็น array แก้ไขแล้ว
-  //       setMessage(prev=>[
-  //       ...prev,{
-  //   textMessage:msg,
-  //   id:Date.now(),
-  //   time: new Date().toLocaleString("th-TH")
-  // }])
-  //  }); 
+      socket.on("system", (msg) => {
+        // เจอปัญหาส่งไปยัง backend เป็น array แก้ไขแล้ว
+        setMessage(prev=>[
+        ...prev,{
+    name:"ระบบ",
+    textMessage:msg,
+    id:Date.now(),
+    time: new Date().toLocaleString("th-TH")
+  }])
+   }); 
       
      
     return ()=>{
+      socket.emit("leave-room",userobject.roomId)
       socket.off("receive-message",handleMessage)
       socket.off("system")
-      
+      socket.off("online-user",handleOnlineUser)
     }
     
    },[])
@@ -119,6 +125,9 @@ setUser(userobject.name)
     <main className='h-screen flex flex-col '>
      {/* bg-chat-history */}
       <section className='flex flex-col h-[775px]'>
+        <div>
+          <OnlineUsers users={onlineUsers} />
+          </div>
          <div className='flex-1 overflow-y-auto p-4 space-y-2'>
           {message.map((msg,index)=>
    
