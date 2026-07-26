@@ -56,6 +56,7 @@ setUser(userobject.name)
   roomId: userobject.roomId,
   userId: Date.now(),
   name: userobject.name,
+  role:userobject.role
 },)
       socket.on("receive-message",handleMessage)
       socket.on("online-user", (users) => { 
@@ -108,8 +109,8 @@ setUser(userobject.name)
 
   // แปลงเป็น object #เจอปัญหาเข้าถึง key ไม่ได้
   // แก้โดยทำการ Destructuring 
-  const {role,name,roomId} = JSON.parse(username)
-   socket.emit("send-message",{roomId,text})
+  const {name,roomId} = JSON.parse(username)
+   socket.emit("send-message",{roomId,text,name,})
 
   }
 

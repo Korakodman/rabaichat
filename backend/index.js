@@ -18,22 +18,60 @@ console.log("เซิฟกำลังทำงาน")
   const rooms = {}
 
 io.on("connection",(socket)=>{
- console.log("connected", socket.id);
    // เมื่อผู้ใช้เข้าห้องมา
     socket.on("join-room",(room)=>{
-  
+
+   const {roomId,userId,name,role} = room
+
     // ถ้าไม่มีห้องสร้างห้องใหม่
-     if(!rooms[room.roomId]){
-     rooms[room.roomId] = []
+     if(!rooms[roomId]){
+     rooms[roomId] = []
      }
+
+   const users = rooms[roomId]
+
+
+
+     // สร้างตัวแปรเช็คผู้ใช้ซ้ำภายในห้อง
+    const userExist = rooms[roomId].some(
+      user => user.name === socket.name
+    )
+
+    if(userExist){
+      console.log("มีผู้ใช้ซ้ำแล้วภายในห้อง")
+      return
+    }
+   // นับจำนวนผู้พูด(ระบาย)
+   const speakerCount = users.filter(
+    user => user.role === "speaker"
+   ).length
+    // นับจำนวนผู้ฟัง
+  const listenCount = users.filter(
+    user => user.role === "listener"
+  ).length
+   
+  // เช็คจำนวนผู้พูด(ระบาย)ภายในห้องนั้น
+  if(role === "speaker" && speakerCount >= 1){
+    console.log("มีผู้ระบายภายในห้องนี้แล้ว")
+    return
+  }
+  // เช็คจำนวนผู้ฟังภายในห้องนั้น
+  if(role === "listener" && listenCount >= 1){
+    console.log("มีผู้รับฟังครบ 2 คนภายในห้องแล้ว")
+    return
+  }
+
      // ถ้ามีห้องแล้วให้เพิ่มผู้ใช้เข้าไปห้องนั้นๆ
-      rooms[room.roomId].push({
+      users.push({
         sockId:socket.id,
-        name:room.name
+        name,
+        userId,
+        role
       })  
-       socket.join(room.roomId)
+       socket.join(roomId)
      
-    io.to(room.roomId).emit("online-user",rooms[room.roomId])
+    io.to(roomId).emit("online-user",users)
+    console.log(users)
      }
 
   );
@@ -42,9 +80,9 @@ io.on("connection",(socket)=>{
    socket.on("send-message",(data)=>{
    // ส่งข้อความไปยังห้องนั้นที่อยู่
     io.to(data.roomId).emit("receive-message",{
-    name:socket.username || "Unknows client",
+    name:data.name || "Unknows client",
     textMessage:data.text,
-    role:"speaker",
+    role:data.role,
     id:Date.now(),
     time: new Date().toLocaleString("th-TH"),
     socket: socket.id
