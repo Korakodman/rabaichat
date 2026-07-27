@@ -25,6 +25,18 @@ const MainNavbar = () => {
       icon: Settings,
     },
   ];
+
+  function Logout(params) {
+    setisLogout(!false)
+   setTimeout(() => {
+    localStorage.clear()
+    route.push("/")
+     setisLogout(false)
+   }, 3000);
+    
+  }
+
+
   return (
     <nav className="bg-[#44444E] h-screen w-48 p-4 text-[#D3DAD9] relative ">
       {/* <----- header -----> */}
@@ -67,7 +79,7 @@ const MainNavbar = () => {
         <Button
           variant="danger"
           className="p-2 bottom-10 absolute font-extrabold duration-200 hover:bg-red-500/80 hover:text-red-700 w-34 transition-all"
-          onClick={()=>setisLogout(!false)}
+          onClick={()=>Logout()}
           isDisabled={isLogout}
         >
             {isLogout ? "Logout..." : "Logout"}

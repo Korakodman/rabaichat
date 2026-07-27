@@ -5,16 +5,16 @@ export const story = [{
  },{
   id:2,
   title:"ครอบครัว",
-  value:"family",
+  value:"ครอบครัว",
  },
 {
   id:3,
   title:"ความรัก",
-  value:"love",
+  value:"ความรัก",
  },{
   id:4,
-  title:"ครอบครัว",
-  value:"family",
+  title:"งาน",
+  value:"งาน",
  },{
   id:5,
   title:"เรื่องอื่นๆ...",

@@ -3,7 +3,7 @@ import { Button,Card,Modal ,useOverlayState,Tabs,ErrorMessage} from "@heroui/rea
 import { UserRound } from "lucide-react"
 import { option } from "@/data/optionStory";
 import { story } from "@/data/story";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {  useForm, } from "react-hook-form";
 import { Header } from "@heroui/react";
 import { ca, tr } from "zod/v4/locales";
@@ -18,16 +18,24 @@ export default function Home() {
   })
   const listen = useForm({
     defaultValues:{
-      role:"listener"
+      role:"listener",
+      name:`ผู้ฟัง${GenerateGustName()}`
     }
   })
+
+
+  useEffect(()=>{
+    if(localStorage.getItem("user")){
+      route.push("/Chat-Room")
+    }
+  },[])
   
   function onSubmitHandle(data) {
     switch (data.role) {
       case "speaker":
          console.log("กำลังสร้างห้อง...",data)
-         let dataJson = JSON.stringify(data)
-         localStorage.setItem("user",dataJson)
+         let dataSpeaker = JSON.stringify(data)
+         localStorage.setItem("user",dataSpeaker)
          setButton(true)
          setTimeout(() => {
          route.push("/Chat-Room")
@@ -35,6 +43,8 @@ export default function Home() {
         break;
       case "listener":
         console.log("กำลังค้นหาห้องสำหรับผู้ฟัง... ",data)
+         let dataListener = JSON.stringify(data)
+         localStorage.setItem("user",dataListener)
           setButton(true)
          setTimeout(() => {
          route.push("/Chat-Room")
@@ -48,7 +58,7 @@ export default function Home() {
 
  // เข้าถึง state Form username และสุ่มชื่อ
 function HandleButtonRamdomGuest(params) {
-  speaker.setValue("username",GenerateGustName())
+  speaker.setValue("name",GenerateGustName())
 }
 function GenerateGustName() {
  return `#${String(Math.floor(Math.random()*10000)).padStart(4,"0")}`
@@ -119,7 +129,7 @@ function GenerateGustName() {
       <div className="flex justify-center">
         คุณอยากรับฟังเรื่องอะไร?
       </div>
-      <select {...listen.register("story", { required: true })} >
+      <select {...listen.register("roomId", { required: true })} >
        {story.map((title)=>{
         return(
           <option className="text-[#37353E]" key={title.id} value={title.value}>{title.title}</option>

@@ -91,7 +91,7 @@ setUser(userobject.name)
   const [message,setMessage] = useState([{
       id: 1,
       name: "ระบบ",
-      textMessage: "Welcome to chat 👋",
+      textMessage: `Welcome to chat 👋`,
       role:"speaker"
     },])
 

@@ -19,9 +19,16 @@ console.log("เซิฟกำลังทำงาน")
 
 io.on("connection",(socket)=>{
    // เมื่อผู้ใช้เข้าห้องมา
+    socket.on("join-message", (data) => {
+
+    socket.username = data;
+    socket.emit("system",`${data.name} Joined ${data.roomId}`)
+    }
+    )
     socket.on("join-room",(room)=>{
 
    const {roomId,userId,name,role} = room
+   socket.name = name
 
     // ถ้าไม่มีห้องสร้างห้องใหม่
      if(!rooms[roomId]){
@@ -56,7 +63,7 @@ io.on("connection",(socket)=>{
     return
   }
   // เช็คจำนวนผู้ฟังภายในห้องนั้น
-  if(role === "listener" && listenCount >= 1){
+  if(role === "listener" && listenCount >= 2){
     console.log("มีผู้รับฟังครบ 2 คนภายในห้องแล้ว")
     return
   }
@@ -66,7 +73,8 @@ io.on("connection",(socket)=>{
         sockId:socket.id,
         name,
         userId,
-        role
+        role,
+        roomId
       })  
        socket.join(roomId)
      
